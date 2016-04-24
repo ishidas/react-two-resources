@@ -1,19 +1,20 @@
-var UserInfo = React.createClass({
+var ContinentsData = React.createClass({
 	getInitialState: function(){
 		return {
-			login: '',
-			avatart_url: '',
-			comments: ''
+			country: '',
+			region: '',
+			mineral: ''
 		};
 	},
 
 	componentDidMount: function(){
-		this.serverRequest = $.get("https://api.github.com/users/ishidas", function(result){
+		this.serverRequest = $.get("http://localhost:3000/continents", function(result){
 			debugger;
 			console.dir('here is result ' + result);
 			this.setState({
-				login: result.login,
-				avatart_url: result.avatar_url
+				country: result.country,
+				region: result.region,
+				mineral: result.mineral
 			});
 		}.bind(this));
 	},
@@ -22,16 +23,17 @@ var UserInfo = React.createClass({
 		this.serverRequest.abort();
 	},
 
+
 	render: function(){
 		return (
-			<div>
-				{this.state.login} is my login name.
-				
-				Here is my image: 
-				<img src={' this.state.avatar_url '} width="100px" height="100px"/>
-			</div>
-		);
+				<ul>
+					<h3>Continents:</h3>
+					<li>{this.state.country}</li>
+					<li>{this.state.region}</li>
+					<li>{this.state.mineral}</li>
+				</ul>
+		)
 	}
 });
 
-ReactDOM.render(<UserInfo />, document.getElementById('example'));
+ReactDOM.render(<ContinentsData />, document.getElementById('example'));

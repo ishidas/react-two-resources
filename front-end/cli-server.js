@@ -4,4 +4,4 @@ const app = express();
 
 app.use(express.static('app'));
 
-app.listen(8080, ()=>console.log('listening at 8080..'))
+app.listen(8080, ()=>console.log('listening at 8080..'));
