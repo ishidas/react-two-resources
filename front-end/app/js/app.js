@@ -1,39 +1,37 @@
-const React = require('react');
-const reactDOM = require('react-dom');
+var UserInfo = React.createClass({
+	getInitialState: function(){
+		return {
+			login: '',
+			avatart_url: '',
+			comments: ''
+		};
+	},
 
-let myUserInfo = React.createClass({
-  getInitialState: function () {
-    return {
-      login: '',
-      avatar_url: ''
-    };
-  },
+	componentDidMount: function(){
+		this.serverRequest = $.get("https://api.github.com/users/ishidas", function(result){
+			debugger;
+			console.dir('here is result ' + result);
+			this.setState({
+				login: result.login,
+				avatart_url: result.avatar_url
+			});
+		}.bind(this));
+	},
 
-  componentDidMount: function () {
-    this.serverRequest = $.get(this.props.source, function (result) {
-      var userInfo = result.data;
-      this.setState({
-        login: userInfo.login,
-        avatar_url: userInfo.owner.avatar_url
-      });
-    }.bind(this));
-  },
+	componentWillUnmount: function(){
+		this.serverRequest.abort();
+	},
 
-  componentWillUnmount: function () {
-    this.serverRequest.abort();
-  },
-
-  render: function () {
-    return (
-      <div>
-        {this.state.login} is my login,
-        {this.state.avatar_url} is avatar_url
-      </div>
-    );
-  }
+	render: function(){
+		return (
+			<div>
+				{this.state.login} is my login name.
+				
+				Here is my image: 
+				<img src={' this.state.avatar_url '} width="100px" height="100px"/>
+			</div>
+		);
+	}
 });
 
-reactDOM.render(
-  <myUserInfo source='https://api.github.com/users/ishidas' />,
-  mountNode
-);
+ReactDOM.render(<UserInfo />, document.getElementById('example'));
