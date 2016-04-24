@@ -8,8 +8,11 @@ var ContinentsData = React.createClass({
 	},
 
 	componentDidMount: function(){
-		this.serverRequest = $.get("http://localhost:3000/continents", function(result){
-			debugger;
+		this.serverRequest = $.ajax({
+			method: 'GET',
+			url: 'http://localhost:3000/continents',
+			cache: false
+		}).then(function(result){
 			console.dir('here is result ' + result);
 			this.setState({
 				country: result.country,
@@ -23,7 +26,13 @@ var ContinentsData = React.createClass({
 		this.serverRequest.abort();
 	},
 
-	post: function(){
+	post: function(e){
+		e.preventDefault();
+		debugger;
+		var valId = this.refs.newId.value;
+		var valCountry = this.refs.newCountry.value;
+		var valRegion = this.refs.newRegion.value;
+		var valMineral = this.refs.newMineral.value;
 		// this.serverRequest = $ajax({
 		// 	method: 'POST',
 		// 	url: 'http://localhost:3000/continents'
@@ -32,7 +41,11 @@ var ContinentsData = React.createClass({
 		// }).done(function(data){
 		// 	console.log('Here is data : ' + data);
 		// });
-		alert('post triggered!');
+		console.log('ID : ' + valId);
+		console.log('COUNTRY : ' + valCountry);
+		console.log('REGION : ' + valRegion);
+		console.log('MINERAL : ' + valMineral);
+		return;
 	},
 
 	edit: function() {
@@ -47,9 +60,14 @@ var ContinentsData = React.createClass({
 		return (
 				<ul>
 					<h3>Continents:</h3>
-					<li>{this.state.country}</li>
-					<li>{this.state.region}</li>
-					<li>{this.state.mineral}</li>
+					<li>ID: {this.state.id}</li>
+					<textarea type="text" ref="newId" class="form-control"></textarea>
+					<li>Country: {this.state.country}</li>
+					<textarea type="text" ref="newCountry" class="form-control"></textarea>
+					<li>Region: {this.state.region}</li>
+					<textarea type="text" ref="newRegion" class="form-control"></textarea>
+					<li>Mineral: {this.state.mineral}</li>
+					<textarea type="text" ref="newMineral" class="form-control"></textarea>
 					<button type="button" class="btn btn-success">GET</button>
 					<button onClick={this.post} type="button" class="btn btn-primary">POST</button>
 					<button onClick={this.edit} type="button" class="btn btn-warning">EDIT</button>
