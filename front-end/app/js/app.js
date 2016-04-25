@@ -15,13 +15,12 @@ var ContinentsData = React.createClass({
 		}.bind(this));
 	},
 
-	// componentWillUnmount: function(){
-	// 	this.serverRequest.abort();
-	// },
+	componentWillUnmount: function(){
+		this.serverRequest.abort();
+	},
 
 	render: function(){
 		console.log('State Array ' + JSON.stringify(this.props.data));
-
 		 var stationComponents = this.state.data.map(function(cont){
 			return <li className='ContinentsData' key={cont._id}>{cont._id}
 				<p key={cont.country}>{cont.country}</p>
@@ -29,57 +28,56 @@ var ContinentsData = React.createClass({
 				<p key={cont.mineral}>{cont.mineral}</p>
 			</li>
 		});
-			return <div>{stationComponents}</div>
-
+			return <div>{stationComponents}
+							<ContinentsDataPost />
+							</div>
 	}
-
 });//end of continents data get all class
 
-var ContinentsDataSecond = React.createClass({
+var ContinentsDataPost = React.createClass({
+	getCountryForm: function(e){
+		this.setState({country: e.target.value})
+	},
+	getRegionForm: function(e){
+		this.setState({region: e.target.value})
+	},
+	getMineralForm: function(e){
+		this.setState({mineral: e.target.value})
+	},
 	getFormState: function(e){
 		var self = this;
 		e.preventDefault();
-		debugger;
-		var valId = e.target.value;
-		var valCountry = e.target.value;
-		var valRegion = e.target.value;
-		var valMineral = e.target.value;
-		console.log('ID : ' + valId);
+		var valCountry = this.state.country;
+		var valRegion = this.state.region;
+		var valMineral = this.state.mineral;
 		console.log('COUNTRY : ' + valCountry);
 		console.log('REGION : ' + valRegion);
 		console.log('MINERAL : ' + valMineral);
-		this.setState({
-				country: e.target.country.value,
-				region: e.target.region.value,
-				mineral: e.target.mineral.value
+		var test = this.state
+		console.dir('State : ' + JSON.stringify(this.state));
+
+		this.serverRequest = $.ajax({
+			type: 'POST',
+			url: 'http://localhost:3000/continents',
+			cache: false,
+			dataType: 'json',
+			data: test,
+			// processData: false,
+			success: function(xmlRequestObj, successString){
+				console.dir('Here is successString : ' + JSON.stringify(successString));
+				console.dir('Here is xmlRequestObj : ' + JSON.stringify(xmlRequestObj));
+			},
+			error: function(xhr, textStatus, error){
+
+			}.bind(this)
 		});
-		console.dir('State : ' + this.state.country);
 	},
 
-	post: function(e){
-		var self = this;
-		e.preventDefault();
-
-
-
-			dispatch
-			this.serverRequest = $.ajax({
-				method: 'POST',
-				url: 'http://localhost:3000/continents',
-				data: {
-					'country': JSON.stringify(this.refs.newCountry.value),
-					'region': JSON.stringify(this.refs.newRegion.value),
-					'mineral': JSON.stringify(this.refs.newMineral.value)
-				},
-				cache: false,
-				dataType: 'json',
-				success: function(xmlRequestObj, successString){
-					console.dir('Here is successString : ' + JSON.stringify(successString));
-					console.dir('Here is xmlRequestObj : ' + JSON.stringify(xmlRequestObj));
-				}.bind(this)
-			});
-
-	},
+	// post: function (valId,valCountry,valRegion, valMineral){
+	// 	var self = this;
+	//
+	//
+	// },
 
 	edit: function() {
 		// this.serverRequest = $ajax({
@@ -90,23 +88,16 @@ var ContinentsDataSecond = React.createClass({
 	},
 
 	render: function(){
+		console.log('State2 : ' +JSON.stringify(this.state));
 		return (
-			<form className="ContinentsData" onSubmit={this.getFormState}>
-				<ul>
+			<form className="ContinentsData">
 					<h3>Continents:</h3>
-					<li>ID: {this.state.id}</li>
-					<textarea  value={this.state.id} ref="newId"></textarea>
-					<li>Country: {this.state.country}</li>
-					<textarea value={this.state.country} ref="newCountry"></textarea>
-					<li>Region: {this.state.region}</li>
-					<textarea value={this.state.region} ref="newRegion"></textarea>
-					<li>Mineral: {this.state.mineral}</li>
-					<textarea value={this.state.mineral} ref="newMineral"></textarea>
-					<button type="button" class="btn btn-success">GET</button>
-					<button type="submit" class="btn btn-primary">POST</button>
+					<textarea placeholder="country" onChange={this.getCountryForm} ref="newCountry"></textarea>
+					<textarea placeholder="region" onChange={this.getRegionForm} ref="newRegion"></textarea>
+					<textarea placeholder="mineral" onChange={this.getMineralForm} ref="newMineral"></textarea>
+					<button onClick={this.getFormState} type="submit" class="btn btn-primary">POST</button>
 					<button onClick={this.edit} type="button" class="btn btn-warning">EDIT</button>
 					<button type="button" class="btn btn-danger">DELETE</button>
-				</ul>
 			</form>
 		)
 	}

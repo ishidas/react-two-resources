@@ -11,12 +11,13 @@ let DB_PORT = process.env.MONGOLAB_URI || 'mongodb://localhost/db';
 mongoose.connect(DB_PORT);
 
 //body-parser needs to be before header and mounting router needs to happen after header!!
-app.use(bodyParser.json());
+// app.use(bodyParser.json({type: 'application/vnd.api+json'}));
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.use((req, res, next)=>{
   res.header('Access-Control-Allow-Origin','http://localhost:8080');
   res.header('Access-Control-Allow-Headers','Content-Type');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   next();
 });
 
