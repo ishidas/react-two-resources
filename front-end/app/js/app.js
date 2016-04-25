@@ -23,13 +23,14 @@ var ContinentsData = React.createClass({
 		console.log('State Array ' + JSON.stringify(this.props.data));
 		 var stationComponents = this.state.data.map(function(cont){
 			return <li className='ContinentsData' key={cont._id}>{cont._id}
-				<p key={cont.country}>{cont.country}</p>
-				<p key={cont.region}>{cont.region}</p>
-				<p key={cont.mineral}>{cont.mineral}</p>
+				<p key={cont.country}>Country : {cont.country}</p>
+				<p key={cont.region}>Region: {cont.region}</p>
+				<p key={cont.mineral}>Mineral: {cont.mineral}</p>
 			</li>
 		});
 			return <div>{stationComponents}
 							<ContinentsDataPost />
+							<ContinentsPut />
 							</div>
 	}
 });//end of continents data get all class
@@ -44,7 +45,7 @@ var ContinentsDataPost = React.createClass({
 	getMineralForm: function(e){
 		this.setState({mineral: e.target.value})
 	},
-	getFormState: function(e){
+	post: function(e){
 		var self = this;
 		e.preventDefault();
 		var valCountry = this.state.country;
@@ -62,7 +63,6 @@ var ContinentsDataPost = React.createClass({
 			cache: false,
 			dataType: 'json',
 			data: test,
-			// processData: false,
 			success: function(xmlRequestObj, successString){
 				console.dir('Here is successString : ' + JSON.stringify(successString));
 				console.dir('Here is xmlRequestObj : ' + JSON.stringify(xmlRequestObj));
@@ -73,20 +73,6 @@ var ContinentsDataPost = React.createClass({
 		});
 	},
 
-	// post: function (valId,valCountry,valRegion, valMineral){
-	// 	var self = this;
-	//
-	//
-	// },
-
-	edit: function() {
-		// this.serverRequest = $ajax({
-		// 	method: 'PUT',
-		// 	url: 'http://localhost:3000/continents/' + id
-		// });
-		alert('edit triggered!')
-	},
-
 	render: function(){
 		console.log('State2 : ' +JSON.stringify(this.state));
 		return (
@@ -95,17 +81,53 @@ var ContinentsDataPost = React.createClass({
 					<textarea placeholder="country" onChange={this.getCountryForm} ref="newCountry"></textarea>
 					<textarea placeholder="region" onChange={this.getRegionForm} ref="newRegion"></textarea>
 					<textarea placeholder="mineral" onChange={this.getMineralForm} ref="newMineral"></textarea>
-					<button onClick={this.getFormState} type="submit" class="btn btn-primary">POST</button>
-					<button onClick={this.edit} type="button" class="btn btn-warning">EDIT</button>
-					<button type="button" class="btn btn-danger">DELETE</button>
+					<button onClick={this.post} type="submit" class="btn btn-primary">POST</button>
 			</form>
 		)
 	}
 });
+
+var ContinentsPut = React.createClass({
+	getIdToDelete: function(e){
+		this.setState({id: e.target.value})
+	},
+
+	delete: function(e) {
+		var self = this;
+		e.preventDefault();
+		var deleteid = this.refs.newId.value;
+		console.log('ID : ' + deleteid);
+
+		this.serverRequest = $.ajax({
+			type: 'DELETE',
+			url: 'http://localhost:3000/continents/' + deleteid,
+			cache: false,
+			dataType: 'json',
+			data: {_id: deleteid },
+			success: function(xmlRequestObj, successString){
+				console.dir('Here is successString : ' + JSON.stringify(successString));
+				console.dir('Here is xmlRequestObj : ' + JSON.stringify(xmlRequestObj));
+			},
+			error: function(xhr, textStatus, error){
+				console.log('Delete Request error : ' + err);
+			}.bind(this)
+		});
+	},
+
+	render: function(){
+		console.log('State2 : ' +JSON.stringify(this.state));
+		return (
+				<form className="ContinentsPut">
+					<textarea placeholder="id" ref="newId"></textarea>
+					<button onClick={this.delete} type="button" class="btn btn-warning">EDIT</button>
+				</form>
+				)
+	}
+});
+
 ReactDOM.render(
 							<section>
 								<ContinentsData url='http://localhost:3000/continents' pollInterval={2000}/>
-
 							</section>
 
 	, document.getElementById('example'));
