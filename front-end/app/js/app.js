@@ -15,9 +15,9 @@ var ContinentsData = React.createClass({
 		}.bind(this));
 	},
 
-	componentWillUnmount: function(){
-		this.serverRequest.abort();
-	},
+	// componentWillUnmount: function(){
+	// 	this.serverRequest.abort();
+	// },
 
 	render: function(){
 		console.log('State Array ' + JSON.stringify(this.props.data));
@@ -30,6 +30,7 @@ var ContinentsData = React.createClass({
 		});
 			return <div>{stationComponents}
 							<ContinentsDataPost />
+							<ContinentsDelete />
 							<ContinentsPut />
 							</div>
 	}
@@ -87,10 +88,7 @@ var ContinentsDataPost = React.createClass({
 	}
 });
 
-var ContinentsPut = React.createClass({
-	getIdToDelete: function(e){
-		this.setState({id: e.target.value})
-	},
+var ContinentsDelete = React.createClass({
 
 	delete: function(e) {
 		var self = this;
@@ -119,9 +117,75 @@ var ContinentsPut = React.createClass({
 		return (
 				<form className="ContinentsPut">
 					<textarea placeholder="id" ref="newId"></textarea>
-					<button onClick={this.delete} type="button" class="btn btn-warning">EDIT</button>
+					<button onClick={this.delete} type="button" class="btn btn-warning">DELETE</button>
 				</form>
 				)
+	}
+});
+
+var ContinentsPut = React.createClass({
+	getInitialState: function(){
+		return {
+				data:[]
+			}
+	},
+	getById: function(e){
+		var self = this;
+		e.preventDefault();
+		var idRef = this.refs.newIdEdit.value;
+		this.serverRequest = $.ajax({
+			type: 'GET',
+			url: 'http://localhost:3000/continents/' + idRef,
+			cache: false,
+			dataType: 'json',
+			data: {_id: idRef}
+		}).then(function(result){
+			console.dir('Here is result of getbyid : ' + JSON.stringify(result));
+			this.replaceState({data: result});
+		}.bind(this));
+	},
+
+	put: function(e){
+		e.preventDefault();
+		var idToPut = this.state.data._id;
+		console.log('New State?? ' + JSON.stringify(this.state));
+		this.serverRequest = $.ajax({
+			type: 'PUT',
+			url: 'http://localhost:3000/continents/' + idToPut,
+			dataType: 'json',
+			data: {_id: idToPut},
+			success: function(xmlRequestObj, successString){
+				console.dir('Here is successString : ' + JSON.stringify(successString));
+				console.dir('Here is xmlRequestObj : ' + JSON.stringify(xmlRequestObj));
+			},
+			error: function(xhr, textStatus, error){
+				console.log('Delete Request error : ' + error);
+			}.bind(this)
+		});
+
+	},
+
+	replaceData: function(e){
+		e.preventDefault();
+		this.replaceState({
+			country: e.target.value,
+		})
+	},
+
+	render: function(){
+		console.log('Current State : ' + JSON.stringify(this.state))
+		return (
+			<form className="ContinentsPut">
+			<textarea placeholder="id to edit" ref="newIdEdit"></textarea>
+			<p value={this.state.data._id}></p>
+			<textarea onChange={this.state.country} value={this.state.inputValue}></textarea>
+			<p value={this.state.data.country}></p>
+			<p value={this.state.data.region}></p>
+			<p value={this.state.data.mineral}></p>
+			<button onClick={this.getById} type="button" class="btn btn-primary">GET By ID</button>
+			<button onClick={this.put} type="button" class="btn btn-warning">EDIT</button>
+			</form>
+		)
 	}
 });
 
