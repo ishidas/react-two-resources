@@ -1,53 +1,38 @@
 var ContinentsData = React.createClass({
 	getInitialState: function(){
 		return {
-			data: [{
-				id: '',
-				country: '',
-				region: '',
-				mineral: ''
-			}]
+			data: []
 			}
 	},
 	componentDidMount: function(){
 		this.serverRequest = $.ajax({
 			method: 'GET',
-			url: 'http://localhost:3000/continents',
+			url: this.props.url,
 			cache: false
 		}).then(function(result){
 			console.dir('here is result ' + JSON.stringify(result));
-				var newState = this.setState(
-					{data: [{
-					id: result.data._id,
-					country: result.data.country,
-					region: result.data.region,
-					mineral: result.data.mineral
-			}]})
-
-			var splitData = newState.data.slice(',');
-			this.state.push(splitData)
+			this.setState({data: result});
 		}.bind(this));
 	},
 
-	componentWillUnmount: function(){
-		this.serverRequest.abort();
-	},
+	// componentWillUnmount: function(){
+	// 	this.serverRequest.abort();
+	// },
 
 	render: function(){
-		console.log('State Array ' + JSON.stringify(this.state.data));
+		console.log('State Array ' + JSON.stringify(this.props.data));
 
-			return (
-				<ul>
-					<h3>Continents:</h3>
-					<li >ID: {this.state.data._id}</li>
-					<li>Country: {this.state.data.country}</li>
-					<li>Region: {this.state.data.region}</li>
-					<li>Mineral: {this.state.data.mineral}</li>
-				</ul>
-			)
+		 var stationComponents = this.state.data.map(function(cont){
+			return <li className='ContinentsData' key={cont._id}>{cont._id}
+				<p key={cont.country}>{cont.country}</p>
+				<p key={cont.region}>{cont.region}</p>
+				<p key={cont.mineral}>{cont.mineral}</p>
+			</li>
+		});
+			return <div>{stationComponents}</div>
 
-		// return retunThisComp;
 	}
+
 });//end of continents data get all class
 
 var ContinentsDataSecond = React.createClass({
@@ -128,11 +113,8 @@ var ContinentsDataSecond = React.createClass({
 });
 ReactDOM.render(
 							<section>
-								<ContinentsData />
-								<ContinentsData />
-								<ContinentsData />
-								<ContinentsData />
-								<ContinentsData />
+								<ContinentsData url='http://localhost:3000/continents' pollInterval={2000}/>
+
 							</section>
 
 	, document.getElementById('example'));
