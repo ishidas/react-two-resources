@@ -4,6 +4,11 @@ var ContinentsData = React.createClass({
 			data: []
 			}
 	},
+
+	//********************************************************
+	//Initial page load with all my db data (if there is any)
+	//You may have to do a post request to see this working.
+	//********************************************************
 	componentDidMount: function(){
 		this.serverRequest = $.ajax({
 			method: 'GET',
@@ -15,10 +20,9 @@ var ContinentsData = React.createClass({
 		}.bind(this));
 	},
 
-	// componentWillUnmount: function(){
-	// 	this.serverRequest.abort();
-	// },
-
+//********************************
+//All components are combined here
+//********************************
 	render: function(){
 		console.log('State Array ' + JSON.stringify(this.props.data));
 		 var stationComponents = this.state.data.map(function(cont){
@@ -36,6 +40,11 @@ var ContinentsData = React.createClass({
 	}
 });//end of continents data get all class
 
+
+//********************************************************
+//first three getCountryForm, getRegionForm, getMineralForm
+//re-sets the state. and post does post to my backend server
+//********************************************************
 var ContinentsDataPost = React.createClass({
 	getCountryForm: function(e){
 		this.setState({country: e.target.value})
@@ -52,11 +61,7 @@ var ContinentsDataPost = React.createClass({
 		var valCountry = this.state.country;
 		var valRegion = this.state.region;
 		var valMineral = this.state.mineral;
-		console.log('COUNTRY : ' + valCountry);
-		console.log('REGION : ' + valRegion);
-		console.log('MINERAL : ' + valMineral);
 		var test = this.state
-		console.dir('State : ' + JSON.stringify(this.state));
 
 		this.serverRequest = $.ajax({
 			type: 'POST',
@@ -88,6 +93,10 @@ var ContinentsDataPost = React.createClass({
 	}
 });
 
+//********************************************************
+//deletes data if you copy and paste _id into the id field
+//and click delete button
+//********************************************************
 var ContinentsDelete = React.createClass({
 
 	delete: function(e) {
@@ -123,6 +132,10 @@ var ContinentsDelete = React.createClass({
 	}
 });
 
+//********************************************************
+//PUT is not working yet.. it does connect to my backend PUT
+//route, but not grabing any data from form.
+//********************************************************
 var ContinentsPut = React.createClass({
 	getInitialState: function(){
 		return {
@@ -197,6 +210,7 @@ var ContinentsPut = React.createClass({
 	}
 });
 
+
 ReactDOM.render(
 							<section>
 								<ContinentsData url='http://localhost:3000/continents' pollInterval={2000}/>
@@ -204,6 +218,10 @@ ReactDOM.render(
 
 	, document.getElementById('example'));
 
+//********************************************************
+//these are done for the purpose of testing but not sure
+//if it works by doing this way. try and error, right!? lol
+//********************************************************
 module.exports = ContinentsData;
 module.exports = ContinentsDataPost;
 module.exports = ContinentsPut;
