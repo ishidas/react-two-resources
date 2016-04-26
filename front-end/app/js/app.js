@@ -145,8 +145,24 @@ var ContinentsPut = React.createClass({
 		}.bind(this));
 	},
 
+	save: function(e){
+		e.preventDefault()
+		this.setState({
+			country: this.refs.newCountry.value,
+			region: this.refs.newRegion.value,
+			mineral: this.refs.newMineral
+		})
+		console.log('Brand New : ' + this.state);
+	},
 	put: function(e){
 		e.preventDefault();
+
+		this.setState({
+			country: this.refs.newCountry.value,
+			region: this.refs.newRegion.value,
+			mineral: this.refs.newMineral
+		})
+		// console.log('Brand New : ' + this.state);
 		var idToPut = this.state.data._id;
 		console.log('New State?? ' + JSON.stringify(this.state));
 		this.serverRequest = $.ajax({
@@ -165,23 +181,15 @@ var ContinentsPut = React.createClass({
 
 	},
 
-	replaceData: function(e){
-		e.preventDefault();
-		this.replaceState({
-			country: e.target.value,
-		})
-	},
-
 	render: function(){
 		console.log('Current State : ' + JSON.stringify(this.state))
 		return (
 			<form className="ContinentsPut">
 			<textarea placeholder="id to edit" ref="newIdEdit"></textarea>
-			<p value={this.state.data._id}></p>
-			<textarea onChange={this.state.country} value={this.state.inputValue}></textarea>
-			<p value={this.state.data.country}></p>
-			<p value={this.state.data.region}></p>
-			<p value={this.state.data.mineral}></p>
+			<input value={this.state.data._id} ></input>
+			<input onChange={this.forceUpdate} value={this.state.data.country} ref="newCountry"></input>
+			<input onChange={this.forceUpdate} value={this.state.data.region} ref="newRegion"></input>
+			<input onChange={this.forceUpdate} value={this.state.data.mineral} ref="newMineral"></input>
 			<button onClick={this.getById} type="button" class="btn btn-primary">GET By ID</button>
 			<button onClick={this.put} type="button" class="btn btn-warning">EDIT</button>
 			</form>
@@ -195,3 +203,8 @@ ReactDOM.render(
 							</section>
 
 	, document.getElementById('example'));
+
+module.exports = ContinentsData;
+module.exports = ContinentsDataPost;
+module.exports = ContinentsPut;
+module.exports = ContinentsDelete;
